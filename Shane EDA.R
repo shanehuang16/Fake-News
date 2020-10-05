@@ -7,6 +7,8 @@ library(tidyverse)
 library(DataExplorer)
 library(tidytext)
 library(stringr)
+library(SnowballC)
+library(kableExtra)
 
 
 # Load in data
@@ -22,5 +24,11 @@ plot_missing(test)
 
 
 # Tokenization
-t <- tibble(id = news$id[1:20], text = news$text[1:20])
-token <- t %>% unnest_tokens(word, text)
+t <- tibble(id = news$id, text = news$text)
+text_df <- t %>% unnest_tokens(word, text)
+
+text_df$word <- wordStem(text_df$word,  language = "english")
+
+head(table(text_df$word)) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
